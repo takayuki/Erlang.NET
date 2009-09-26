@@ -1,0 +1,42 @@
+Welcome to Erlang.NET!
+
+Erlang.NET is an implementation of an Erlang node in C# which was manually
+translated and ported from the counterpart in Java, jinterface.
+In addition to the original jinterface, Erlang.NET contains a preliminary
+implementation of epmd (Erlang Port Mapper Daemon) written in C#, whereas
+jinterface requires epmd included the official Erlang distribution.
+In other words, Erlang.NET works independently from Erlang and allows you
+to build distributed Erlang nodes, exclusively using .NET Framework.
+
+Erlang
+http://erlang.org/
+
+jinterface
+http://erlang.org/doc/apps/jinterface/index.html
+
+Also, Erlang.NET is going to provide light-weight process equivalent to
+so-called "process" in Erlang. Although the idea I am currently working on
+is most directly inspired by Singh, many similar programming technique to
+implement light-weight process and thread for .NET Framework, using
+iterator tricks in C#, can be easily found in the Internet.
+
+An Asynchronous Messaging Library for C#
+Satnam Singh and Georgio Chrysanthakopoulos (Microsoft)
+http://research.microsoft.com/en-us/um/people/tharris/scool/
+
+Another previous work by Vlad Dumitrescu (vlad_Dumitrescu@hotmail.com) can
+be found below. As mentioned in the post, Otp.Net was based on jinterface
+1.2.1.1 and unfortunately not actively maintained today. Erlang.NET is a
+new port based on the latest jinterface 1.5.1.
+
+[ANN] Release of Otp.Net framework
+http://www.erlang.org/pipermail/erlang-questions/2004-May/012313.html
+
+Jungerl: A jungle of Erlang code
+http://sourceforge.net/projects/jungerl/
+
+Index of /jungerl/lib/otp.net
+http://jungerl.cvs.sourceforge.net/viewvc/jungerl/jungerl/lib/otp.net/
+
+
+Takayuki Usui

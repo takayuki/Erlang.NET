@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Prebuild version="1.7" xmlns="http://dnpb.sourceforge.net/schemas/prebuild-1.7.xsd">
+	<Solution name="Erlang.NET" activeConfig="Debug" path="./">
+		<Configuration name="Debug">
+			<Options>
+				<CompilerDefines>DEBUG;TRACE;WIN32</CompilerDefines>
+				<OptimizeCode>false</OptimizeCode>
+				<CheckUnderflowOverflow>false</CheckUnderflowOverflow>
+				<AllowUnsafe>false</AllowUnsafe>
+				<WarningLevel>4</WarningLevel>   
+				<WarningsAsErrors>false</WarningsAsErrors>
+				<SuppressWarnings></SuppressWarnings>
+				<OutputPath>../bin</OutputPath>
+				<DebugInformation>true</DebugInformation>
+				<RegisterComInterop>false</RegisterComInterop>
+				<IncrementalBuild>true</IncrementalBuild>
+				<BaseAddress>285212672</BaseAddress>
+				<FileAlignment>4096</FileAlignment>
+				<NoStdLib>false</NoStdLib>
+			</Options>
+		</Configuration>
+		<Configuration name="Release">
+			<Options>
+				<CompilerDefines>TRACE</CompilerDefines>
+				<OptimizeCode>true</OptimizeCode>
+				<CheckUnderflowOverflow>false</CheckUnderflowOverflow>
+				<AllowUnsafe>false</AllowUnsafe>
+				<WarningLevel>4</WarningLevel>
+				<WarningsAsErrors>false</WarningsAsErrors>
+				<SuppressWarnings></SuppressWarnings>
+				<OutputPath>../bin</OutputPath>
+				<DebugInformation>false</DebugInformation>
+				<RegisterComInterop>false</RegisterComInterop>
+				<IncrementalBuild>true</IncrementalBuild>
+				<BaseAddress>285212672</BaseAddress>
+				<FileAlignment>4096</FileAlignment>
+				<NoStdLib>false</NoStdLib>
+			</Options>
+		</Configuration>
+
+		<Project name="Erlang.NET" language="C#" path="lib" type="Library" assemblyName="Erlang">
+			<Configuration name="Debug">
+				<Options>
+					<OutputPath>../bin</OutputPath>
+				</Options>
+			</Configuration>
+			<Configuration name="Release">
+				<Options>
+					<OutputPath>../bin</OutputPath>
+				</Options>
+			</Configuration>
+			<ReferencePath>../bin</ReferencePath>
+			<Reference name="System"/>
+			<Reference name="System.Configuration"/>
+			<Reference name="log4net"/>
+			<Files>
+				<Match path="." pattern="*.cs" recurse="true"/>
+			</Files>
+		</Project>
+
+		<Project name="epmd" language="C#" path="epmd" type="Exe" assemblyName="epmd">
+			<Configuration name="Debug">
+				<Options>
+					<OutputPath>../bin</OutputPath>
+				</Options>
+			</Configuration>
+			<Configuration name="Release">
+				<Options>
+					<OutputPath>../bin</OutputPath>
+				</Options>
+			</Configuration>
+			<ReferencePath>../bin</ReferencePath>
+			<Reference name="System"/>
+			<Reference name="System.Configuration"/>
+			<Reference name="log4net"/>
+			<Reference name="Erlang.NET"/>
+			<Files>
+				<Match path="." pattern="*.cs" recurse="false"/>
+			</Files>
+		</Project>
+
+		<Project name="ping" language="C#" path="ping" type="Exe" assemblyName="ping">
+			<Configuration name="Debug">
+				<Options>
+					<OutputPath>../bin</OutputPath>
+				</Options>
+			</Configuration>
+			<Configuration name="Release">
+				<Options>
+					<OutputPath>../bin</OutputPath>
+				</Options>
+			</Configuration>
+			<ReferencePath>../bin</ReferencePath>
+			<Reference name="System"/>
+			<Reference name="System.Configuration"/>
+			<Reference name="log4net"/>
+			<Reference name="Erlang.NET"/>
+			<Files>
+				<Match path="." pattern="*.cs" recurse="false"/>
+			</Files>
+		</Project>
+	</Solution>
+</Prebuild>
