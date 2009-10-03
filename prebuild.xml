@@ -99,5 +99,26 @@
 				<Match path="." pattern="*.cs" recurse="false"/>
 			</Files>
 		</Project>
+
+		<Project name="echo" language="C#" path="echo" type="Exe" assemblyName="echo">
+			<Configuration name="Debug">
+				<Options>
+					<OutputPath>../bin</OutputPath>
+				</Options>
+			</Configuration>
+			<Configuration name="Release">
+				<Options>
+					<OutputPath>../bin</OutputPath>
+				</Options>
+			</Configuration>
+			<ReferencePath>../bin</ReferencePath>
+			<Reference name="System"/>
+			<Reference name="System.Configuration"/>
+			<Reference name="log4net"/>
+			<Reference name="Erlang.NET"/>
+			<Files>
+				<Match path="." pattern="*.cs" recurse="false"/>
+			</Files>
+		</Project>
 	</Solution>
 </Prebuild>

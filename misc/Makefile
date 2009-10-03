@@ -19,6 +19,9 @@ BufferedTcpClient.cs \
 GenericQueue.cs \
 Link.cs \
 Links.cs \
+OtpActor.cs \
+OtpActorSched.cs \
+OtpAsyncMbox.cs \
 OtpAuthException.cs \
 OtpConnection.cs \
 OtpCookedConnection.cs \
@@ -65,7 +68,7 @@ OtpSelf.cs \
 OtpServer.cs \
 ThreadBase.cs
 
-all: ping.exe epmd.exe
+all: echo.exe ping.exe epmd.exe
 
 Erlang.dll: $(SRCS)
 	$(MCS) $(MCSFLAGS) -target:library -out:Erlang.dll \
@@ -76,6 +79,9 @@ epmd.exe: Erlang.dll epmd.cs
 
 ping.exe: Erlang.dll ping.cs
 	$(MCS) $(MCSFLAGS) -r:Erlang -target:exe -out:ping.exe ping.cs
+
+echo.exe: Erlang.dll echo.cs
+	$(MCS) $(MCSFLAGS) -r:Erlang -target:exe -out:echo.exe echo.cs
 
 clean:
 	rm -f *.dll *.exe *.mdb *~
