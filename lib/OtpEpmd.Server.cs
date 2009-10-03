@@ -140,6 +140,7 @@ namespace Erlang.NET
 		{
 		    if (s != null)
 		    {
+			s.GetStream().Close();
 			s.Close();
 		    }
 		}

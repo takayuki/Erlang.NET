@@ -79,6 +79,7 @@ namespace Erlang.NET
 
 	public void Close()
 	{
+	    client.GetStream().Close();
 	    client.Close();
 	}
 
