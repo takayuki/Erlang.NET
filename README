@@ -14,11 +14,11 @@ http://erlang.org/
 jinterface
 http://erlang.org/doc/apps/jinterface/index.html
 
-Also, Erlang.NET is going to provide light-weight process equivalent to
-so-called "process" in Erlang. Although the idea I am currently working on
-is most directly inspired by Singh, many similar programming technique to
-implement light-weight process and thread for .NET Framework, using
-iterator tricks in C#, can be easily found in the Internet.
+Also, Erlang.NET offers light-weight process, event-driven "actor",
+equivalent to so-called "process" in Erlang. Although the idea I am currently
+working on is most directly inspired by Singh, many similar programming
+technique to implement light-weight process and thread for .NET Framework,
+using iterator in C#, can be easily found in the Internet.
 
 An Asynchronous Messaging Library for C#
 Satnam Singh and Georgio Chrysanthakopoulos (Microsoft)
