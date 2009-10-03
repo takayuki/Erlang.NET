@@ -64,6 +64,9 @@ namespace Erlang.NET
 	// thread to manage incoming connections
 	private Acceptor acceptor = null;
 
+	// thread to schedule actors
+	private OtpActorSched sched = null;
+
 	// keep track of all connections
 	Dictionary<String, OtpCookedConnection> connections = null;
 
@@ -160,7 +163,8 @@ namespace Erlang.NET
 		{
 		    connections = new Dictionary<String, OtpCookedConnection>();
 
-		    mboxes = new Mailboxes(this);
+		    sched = new OtpActorSched();
+		    mboxes = new Mailboxes(this, sched);
 		    acceptor = new Acceptor(this, port);
 		    initDone = true;
 		}
@@ -205,9 +209,9 @@ namespace Erlang.NET
 	 * 
 	 * @return a mailbox.
 	 */
-	public OtpMbox createMbox()
+	public OtpMbox createMbox(bool sync)
 	{
-	    return mboxes.create();
+	    return mboxes.create(sync);
 	}
 
 	/**
@@ -280,9 +284,9 @@ namespace Erlang.NET
 	 * @return a mailbox, or null if the name was already in use.
 	 * 
 	 */
-	public OtpMbox createMbox(String name)
+	public OtpMbox createMbox(String name, bool sync)
 	{
-	    return mboxes.create(name);
+	    return mboxes.create(name, sync);
 	}
 
 	/**
@@ -408,7 +412,7 @@ namespace Erlang.NET
 	    OtpMbox mbox = null;
 	    try
 	    {
-		mbox = createMbox();
+		mbox = createMbox(true);
 		mbox.send("net_kernel", node, getPingTuple(mbox));
 		OtpErlangObject reply = mbox.receive(timeout);
 		OtpErlangTuple t = (OtpErlangTuple) reply;
@@ -465,7 +469,7 @@ namespace Erlang.NET
 		pong[0] = req.elementAt(1); // his #Ref
 		pong[1] = new OtpErlangAtom("yes");
 
-		mbox = createMbox();
+		mbox = createMbox(true);
 		mbox.send(pid, new OtpErlangTuple(pong));
 		return true;
 	    }
@@ -531,6 +535,11 @@ namespace Erlang.NET
 	{
 	    removeConnection(conn);
 	    remoteStatus(conn.Name, false, e);
+	}
+
+	public void react(OtpActor actor)
+	{
+	    sched.react(actor);
 	}
 
 	/*
@@ -654,20 +663,22 @@ namespace Erlang.NET
 	public class Mailboxes
 	{
 	    private readonly OtpNode node;
+	    private readonly OtpActorSched sched;
 
 	    // mbox pids here
 	    private Dictionary<OtpErlangPid, WeakReference> byPid = null;
 	    // mbox names here
 	    private Dictionary<String, WeakReference> byName = null;
 
-	    public Mailboxes(OtpNode node)
+	    public Mailboxes(OtpNode node, OtpActorSched sched)
 	    {
 		this.node = node;
+		this.sched = sched;
 		byPid = new Dictionary<OtpErlangPid, WeakReference>();
 		byName = new Dictionary<String, WeakReference>();
 	    }
 
-	    public OtpMbox create(String name)
+	    public OtpMbox create(String name, bool sync)
 	    {
 		OtpMbox m = null;
 
@@ -678,17 +689,17 @@ namespace Erlang.NET
 			return null;
 		    }
 		    OtpErlangPid pid = node.createPid();
-		    m = new OtpMbox(node, pid, name);
+		    m = sync ? new OtpMbox(node, pid, name) : new OtpAsyncMbox(sched, node, pid, name);
 		    byPid.Add(pid, new WeakReference(m));
 		    byName.Add(name, new WeakReference(m));
 		}
 		return m;
 	    }
 
-	    public OtpMbox create()
+	    public OtpMbox create(bool sync)
 	    {
 		OtpErlangPid pid = node.createPid();
-		OtpMbox m = new OtpMbox(node, pid);
+		OtpMbox m = sync ? new OtpMbox(node, pid) : new OtpAsyncMbox(sched, node, pid);
 		lock (this)
 		{
 		    byPid.Add(pid, new WeakReference(m));

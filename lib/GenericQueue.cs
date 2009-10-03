@@ -195,17 +195,25 @@ namespace Erlang.NET
 	{
 	    Object o = null;
 
-	    if (head != null)
+	    Monitor.Enter(this);
+	    try
 	    {
-		o = head.getContents();
-		head = head.getNext();
-		count--;
-
-		if (head == null)
+		if (head != null)
 		{
-		    tail = null;
-		    count = 0;
+		    o = head.getContents();
+		    head = head.getNext();
+		    count--;
+
+		    if (head == null)
+		    {
+			tail = null;
+			count = 0;
+		    }
 		}
+	    }
+	    finally
+	    {
+		Monitor.Exit(this);
 	    }
 
 	    return o;

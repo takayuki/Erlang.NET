@@ -88,6 +88,11 @@ namespace Erlang.NET
 	String name;
 	Links links;
 
+	protected GenericQueue Queue
+	{
+	    get { return queue; }
+	}
+
 	// package constructor: called by OtpNode:createMbox(name)
 	// to create a named mbox
 	internal OtpMbox(OtpNode home, OtpErlangPid self, String name)
@@ -286,7 +291,7 @@ namespace Erlang.NET
 	 *                    sent an exit signal to this mailbox.
 	 * 
 	 */
-	public OtpMsg receiveMsg()
+	public virtual OtpMsg receiveMsg()
 	{
 	    OtpMsg m = (OtpMsg) queue.get();
 
@@ -326,7 +331,7 @@ namespace Erlang.NET
 	 *                    if no message if the method times out before a message
 	 *                    becomes available.
 	 */
-	public OtpMsg receiveMsg(long timeout)
+	public virtual OtpMsg receiveMsg(long timeout)
 	{
 	    OtpMsg m = (OtpMsg) queue.get(timeout);
 
@@ -546,7 +551,8 @@ namespace Erlang.NET
 		    }
 		}
 	    }
-	    catch (Exception) {
+	    catch (Exception)
+	    {
 	    }
 	}
 
@@ -740,7 +746,7 @@ namespace Erlang.NET
 	 * This is equivalent to {@link #exit(String) exit("normal")}.
 	 * </p>
 	 */
-	public void close()
+	public virtual void close()
 	{
 	    home.closeMbox(this);
 	}
@@ -780,7 +786,7 @@ namespace Erlang.NET
 	 * However exit (not 2) causes any link to be removed as well, while exit2
 	 * leaves any links intact.
 	 */
-	public void deliver(OtpMsg m)
+	public virtual void deliver(OtpMsg m)
 	{
 	    switch (m.type()) {
 	    case OtpMsg.linkTag:
