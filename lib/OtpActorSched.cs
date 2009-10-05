@@ -33,7 +33,7 @@ namespace Erlang.NET
 	{
 	    private readonly OtpActor actor;
 	    private readonly IEnumerator<OtpActor.Continuation> enumerator;
-	    private volatile bool active = true;
+	    private volatile bool active = false;
 
 	    public bool Active
 	    {
@@ -80,6 +80,7 @@ namespace Erlang.NET
 		Monitor.Enter(runnable);
 		try
 		{
+		    task.Active = true;
 		    runnable.Enqueue(task);
 		    if (runnable.Count == 1)
 		    {
