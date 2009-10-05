@@ -29,16 +29,16 @@ namespace Erlang.NET
     {
 	private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
-	private class OtpActorSchedTask
+	public class OtpActorSchedTask
 	{
 	    private readonly OtpActor actor;
 	    private readonly IEnumerator<OtpActor.Continuation> enumerator;
-	    private volatile bool cancelled = false;
+	    private volatile bool active = true;
 
-	    public bool IsCancelled
+	    public bool Active
 	    {
-		get { return cancelled; }
-		set { cancelled = value; }
+		get { return active; }
+		set { active = value; }
 	    }
 
 	    public OtpActor Actor
@@ -53,15 +53,13 @@ namespace Erlang.NET
 
 	    public OtpActorSchedTask(OtpActor actor)
 	    {
+		actor.Task = this;
 		this.actor = actor;
 		this.enumerator = actor.GetEnumerator();
 	    }
 	}
 
-	private Dictionary<OtpAsyncMbox, OtpActorSchedTask> sleeping = new Dictionary<OtpAsyncMbox, OtpActorSchedTask>();
-	private List<OtpActorSchedTask> runnable = new List<OtpActorSchedTask>();
-
-	private volatile int tick = 0;
+	private Queue<OtpActorSchedTask> runnable = new Queue<OtpActorSchedTask>();
 
 	public OtpActorSched() : base("OtpActorSched", true)
 	{
@@ -71,59 +69,70 @@ namespace Erlang.NET
 	public void react(OtpActor actor)
 	{
 	    OtpActorSchedTask task = new OtpActorSchedTask(actor);
+	    IEnumerator<OtpActor.Continuation> enumerator = task.Enumerator;
 
-	    Monitor.Enter(runnable);
-	    try
+	    if (!enumerator.MoveNext())
 	    {
-		runnable.Add(task);
-		Monitor.Pulse(runnable);
+		task.Active = false;
 	    }
-	    finally
+	    else
 	    {
-		Monitor.Exit(runnable);
-	    }
-	}
-
-	public void canncel(OtpAsyncMbox mbox)
-	{
-	    Monitor.Enter(runnable);
-	    try
-	    {
-		lock (sleeping)
+		Monitor.Enter(runnable);
+		try
 		{
-		    if (sleeping.ContainsKey(mbox))
+		    runnable.Enqueue(task);
+		    if (runnable.Count == 1)
 		    {
-			sleeping.Remove(mbox);
-		    }
-		}
-		foreach (OtpActorSchedTask task in runnable)
-		{
-		    if (task.Actor.Mailbox == mbox)
-		    {
-			task.IsCancelled = true;
-			break;
-		    }
-		}
-	    }
-	    finally
-	    {
-		Monitor.Exit(runnable);
-	    }
-	}
-
-	public void notify(OtpAsyncMbox mbox)
-	{
-	    Monitor.Enter(runnable);
-	    try
-	    {
-		lock (sleeping)
-		{
-		    if (sleeping.ContainsKey(mbox))
-		    {
-			runnable.Add(sleeping[mbox]);
-			sleeping.Remove(mbox);
 			Monitor.Pulse(runnable);
 		    }
+		}
+		finally
+		{
+		    Monitor.Exit(runnable);
+		}
+	    }
+	}
+
+	public void canncel(OtpActorMbox mbox)
+	{
+	    OtpActorSchedTask task = mbox.Task;
+
+	    Monitor.Enter(runnable);
+	    try
+	    {
+		lock (task)
+		{
+		    task.Active = false;
+		}
+	    }
+	    finally
+	    {
+		Monitor.Exit(runnable);
+	    }
+	}
+
+	public void notify(OtpActorMbox mbox)
+	{
+	    OtpActorSchedTask task = mbox.Task;
+
+	    Monitor.Enter(runnable);
+	    try
+	    {
+		Monitor.Enter(task);
+		try
+		{
+		    if (mbox.Task.Active)
+		    {
+			runnable.Enqueue(mbox.Task);
+			if (runnable.Count == 1)
+			{
+			    Monitor.Pulse(runnable);
+			}
+		    }
+		}
+		finally
+		{
+		    Monitor.Exit(task);
 		}
 	    }
 	    finally
@@ -150,64 +159,51 @@ namespace Erlang.NET
 		    Monitor.Wait(runnable);
 		}
 
-		OtpActorSchedTask task = runnable[tick++ % runnable.Count];
+		OtpActorSchedTask task = runnable.Dequeue();
 		OtpActor actor = task.Actor;
 		IEnumerator<OtpActor.Continuation> enumerator = task.Enumerator;
-		
-		if (task.IsCancelled)
+
+		Monitor.Enter(task);
+		try
 		{
-		    runnable.Remove(task);
-		}
-		else if (!actor.IsStarted)
-		{
-		    task.Actor.IsStarted = true;
-		    if (!enumerator.MoveNext())
+		    if (task.Active)
 		    {
-			runnable.Remove(task);
+			OtpMsg msg = actor.Mbox.receiveMsg();
+
+			if (msg == null)
+			{
+			    return;
+			}
+
+			ThreadPool.QueueUserWorkItem
+			    (delegate (Object state)
+			     {
+				 Monitor.Enter(task);
+				 try
+				 {
+				     OtpActor.Continuation cont = enumerator.Current;
+
+				     cont(msg);
+
+				     if (!enumerator.MoveNext())
+				     {
+					 task.Active = false;
+				     }
+				 }
+				 catch (Exception e)
+				 {
+				     log.Info("Exception was thrown from running actor: " + e.Message);
+				 }
+				 finally
+				 {
+				     Monitor.Exit(task);
+				 }
+			     });
 		    }
 		}
-		else
+		finally
 		{
-		    OtpAsyncMbox mbox = actor.Mailbox;
-		    GenericQueue queue = mbox.Queue;
-		    OtpMsg msg = null;
-
-		    lock (queue)
-		    {
-			if (queue.getCount() == 0)
-			{
-			    lock (sleeping)
-			    {
-				runnable.Remove(task);
-				sleeping.Add(mbox, task);
-			    }
-			}
-			else
-			{
-			    msg = (OtpMsg)queue.get();
-			}
-		    }
-
-		    if (msg != null)
-		    {
-			OtpActor.Continuation cont = enumerator.Current;
-
-			try
-			{				
-			    cont(msg);
-			}
-			catch (Exception e)
-			{
-			    log.Info("Exception was thrown from running actor: " + e.Message);
-			}
-			finally
-			{
-			    if (!enumerator.MoveNext())
-			    {
-				runnable.Remove(task);
-			    }
-			}
-		    }
+		    Monitor.Exit(task);
 		}
 	    }
 	    finally

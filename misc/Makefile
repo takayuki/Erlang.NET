@@ -20,8 +20,8 @@ GenericQueue.cs \
 Link.cs \
 Links.cs \
 OtpActor.cs \
+OtpActorMbox.cs \
 OtpActorSched.cs \
-OtpAsyncMbox.cs \
 OtpAuthException.cs \
 OtpConnection.cs \
 OtpCookedConnection.cs \
@@ -68,7 +68,7 @@ OtpSelf.cs \
 OtpServer.cs \
 ThreadBase.cs
 
-all: echo.exe ping.exe epmd.exe
+all: echo.exe epmd.exe
 
 Erlang.dll: $(SRCS)
 	$(MCS) $(MCSFLAGS) -target:library -out:Erlang.dll \

@@ -25,21 +25,20 @@ namespace Erlang.NET
     {
 	public delegate void Continuation(OtpMsg msg);
 
-	private readonly OtpAsyncMbox mbox;
-	private bool started = false;
+	private readonly OtpActorMbox mbox;
 
-	public OtpAsyncMbox Mailbox
+	public OtpActorMbox Mbox
 	{
 	    get { return mbox; }
 	}
 
-	public bool IsStarted
+	public OtpActorSched.OtpActorSchedTask Task
 	{
-	    get { return started; }
-	    set { started = value; }
+	    get { return mbox.Task; }
+	    set { mbox.Task = value; }
 	}
 
-	public OtpActor(OtpAsyncMbox mbox)
+	public OtpActor(OtpActorMbox mbox)
 	{
 	    this.mbox = mbox;
 	}

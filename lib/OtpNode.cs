@@ -689,7 +689,7 @@ namespace Erlang.NET
 			return null;
 		    }
 		    OtpErlangPid pid = node.createPid();
-		    m = sync ? new OtpMbox(node, pid, name) : new OtpAsyncMbox(sched, node, pid, name);
+		    m = sync ? new OtpMbox(node, pid, name) : new OtpActorMbox(sched, node, pid, name);
 		    byPid.Add(pid, new WeakReference(m));
 		    byName.Add(name, new WeakReference(m));
 		}
@@ -699,7 +699,7 @@ namespace Erlang.NET
 	    public OtpMbox create(bool sync)
 	    {
 		OtpErlangPid pid = node.createPid();
-		OtpMbox m = sync ? new OtpMbox(node, pid) : new OtpAsyncMbox(sched, node, pid);
+		OtpMbox m = sync ? new OtpMbox(node, pid) : new OtpActorMbox(sched, node, pid);
 		lock (this)
 		{
 		    byPid.Add(pid, new WeakReference(m));

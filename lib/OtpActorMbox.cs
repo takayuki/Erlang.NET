@@ -20,22 +20,24 @@ using System;
 
 namespace Erlang.NET
 {
-    public class OtpAsyncMbox : OtpMbox
+    public class OtpActorMbox : OtpMbox
     {
 	protected readonly OtpActorSched sched;
+	protected OtpActorSched.OtpActorSchedTask task;
 
-	public new GenericQueue Queue
+	public OtpActorSched.OtpActorSchedTask Task
 	{
-	    get { return base.Queue; }
+	    get { return task; }
+	    set { task = value; }
 	}
 
-	internal OtpAsyncMbox(OtpActorSched sched, OtpNode home, OtpErlangPid self, String name)
+	internal OtpActorMbox(OtpActorSched sched, OtpNode home, OtpErlangPid self, String name)
 	    : base(home, self, name)
 	{
 	    this.sched = sched;
 	}
 
-	internal OtpAsyncMbox(OtpActorSched sched, OtpNode home, OtpErlangPid self)
+	internal OtpActorMbox(OtpActorSched sched, OtpNode home, OtpErlangPid self)
 	    : base(home, self, null)
 	{
 	    this.sched = sched;
@@ -49,12 +51,30 @@ namespace Erlang.NET
 
 	public override OtpMsg receiveMsg()
 	{
-	    throw new NotSupportedException();
+	    Object m = Queue.tryGet();
+
+	    if (m == null)
+	    {
+		return null;
+	    }
+	    else
+	    {
+		return (OtpMsg)m;
+	    }
 	}
 
 	public override OtpMsg receiveMsg(long timeout)
 	{
-	    throw new NotSupportedException();
+	    Object m = Queue.get(timeout);
+
+	    if (m == null)
+	    {
+		return null;
+	    }
+	    else
+	    {
+		return (OtpMsg)m;
+	    }
 	}
 
 	public override void deliver(OtpMsg m)
