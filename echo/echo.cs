@@ -37,13 +37,13 @@ namespace Erlang.NET.Test
 
 	public class OtpEchoActor : OtpActor
 	{
-	    public OtpEchoActor(OtpAsyncMbox mbox) : base(mbox)
+	    public OtpEchoActor(OtpActorMbox mbox) : base(mbox)
 	    {
 	    }
 
 	    public override IEnumerator<Continuation> GetEnumerator()
 	    {
-		OtpMbox mbox = base.Mailbox;
+		OtpMbox mbox = base.Mbox;
 		OtpMsg msg = null;
 
 		while (true)
@@ -62,7 +62,7 @@ namespace Erlang.NET.Test
 	{
 	    OtpNode a = new OtpNode("a");
 	    OtpNode b = new OtpNode("b");
-	    OtpAsyncMbox echo = (OtpAsyncMbox)b.createMbox("echo", false);
+	    OtpActorMbox echo = (OtpActorMbox)b.createMbox("echo", false);
 	    b.react(new OtpEchoActor(echo));
 	    OtpMbox echoback = a.createMbox("echoback", true);
 	    OtpErlangObject[] v = { echoback.Self, new OtpErlangString("Hello, World!") };
