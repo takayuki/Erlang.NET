@@ -65,227 +65,232 @@ namespace Erlang.NET
      */
     public class AbstractNode
     {
-	static readonly String localHost;
-	String node;
-	String host;
-	String alive;
-	String cookie;
-	protected static readonly String defaultCookie;
+        static readonly String localHost;
+        String node;
+        String host;
+        String alive;
+        String cookie;
+        protected static readonly String defaultCookie;
 
-	// Node types
-	public const int NTYPE_R6 = 110; // 'n' post-r5, all nodes
-	public const int NTYPE_R4_ERLANG = 109; // 'm' Only for source compatibility
-	public const int NTYPE_R4_HIDDEN = 104; // 'h' Only for source compatibility
+        // Node types
+        public const int NTYPE_R6 = 110; // 'n' post-r5, all nodes
+        public const int NTYPE_R4_ERLANG = 109; // 'm' Only for source compatibility
+        public const int NTYPE_R4_HIDDEN = 104; // 'h' Only for source compatibility
 
-	// Node capability flags
-	public const int dFlagPublished = 1;
-	public const int dFlagAtomCache = 2;
-	public const int dFlagExtendedReferences = 4;
-	public const int dFlagDistMonitor = 8;
-	public const int dFlagFunTags = 0x10;
-	public const int dFlagDistMonitorName = 0x20; // NOT USED
-	public const int dFlagHiddenAtomCache = 0x40; // NOT SUPPORTED
-	public const int dflagNewFunTags = 0x80;
-	public const int dFlagExtendedPidsPorts = 0x100;
-	public const int dFlagExportPtrTag = 0x200; // NOT SUPPORTED
-	public const int dFlagBitBinaries = 0x400;
-	public const int dFlagNewFloats = 0x800;
+        // Node capability flags
+        public const int dFlagPublished = 1;
+        public const int dFlagAtomCache = 2;
+        public const int dFlagExtendedReferences = 4;
+        public const int dFlagDistMonitor = 8;
+        public const int dFlagFunTags = 0x10;
+        public const int dFlagDistMonitorName = 0x20; // NOT USED
+        public const int dFlagHiddenAtomCache = 0x40; // NOT SUPPORTED
+        public const int dflagNewFunTags = 0x80;
+        public const int dFlagExtendedPidsPorts = 0x100;
+        public const int dFlagExportPtrTag = 0x200; // NOT SUPPORTED
+        public const int dFlagBitBinaries = 0x400;
+        public const int dFlagNewFloats = 0x800;
 
-	int ntype = NTYPE_R6;
-	int proto = 0; // tcp/ip
-	int distHigh = 5; // Cannot talk to nodes before R6
-	int distLow = 5; // Cannot talk to nodes before R6
-	int creation = 0;
-	int flags = dFlagExtendedReferences | dFlagExtendedPidsPorts
-	    | dFlagBitBinaries | dFlagNewFloats | dFlagFunTags | dflagNewFunTags;
+        int ntype = NTYPE_R6;
+        int proto = 0; // tcp/ip
+        int distHigh = 5; // Cannot talk to nodes before R6
+        int distLow = 5; // Cannot talk to nodes before R6
+        int creation = 0;
+        int flags = dFlagExtendedReferences | dFlagExtendedPidsPorts
+            | dFlagBitBinaries | dFlagNewFloats | dFlagFunTags | dflagNewFunTags;
 
-	/* initialize hostname and default cookie */
-	static AbstractNode()
-	{
-	    try
-	    {
-		localHost = Dns.GetHostName();
-		/*
-		 * Make sure it's a short name, i.e. strip of everything after first
-		 * '.'
-		 */
-		int dot = localHost.IndexOf(".");
-		if (dot != -1)
-		{
-		    localHost = localHost.Substring(0, dot);
-		}
-	    }
-	    catch (SocketException)
-	    {
-		localHost = "localhost";
-	    }
+        /* initialize hostname and default cookie */
+        static AbstractNode()
+        {
+            try
+            {
+                localHost = Dns.GetHostName();
+                /*
+                 * Make sure it's a short name, i.e. strip of everything after first
+                 * '.'
+                 */
+                int dot = localHost.IndexOf(".");
+                if (dot != -1)
+                {
+                    localHost = localHost.Substring(0, dot);
+                }
+            }
+            catch (SocketException)
+            {
+                localHost = "localhost";
+            }
 
-	    String userHome;
-	    switch (Environment.OSVersion.Platform)
-	    {
-		case PlatformID.Unix:
-		    userHome = Environment.GetEnvironmentVariable("HOME");
-		    break;
-		default:
-		    userHome = Environment.ExpandEnvironmentVariables("%HOMEDRIVE%%HOMEPATH%");
-		    break;
-	    }
-	    String dotCookieFilename = Path.Combine(userHome,".erlang.cookie"); 
+            String userHome;
+            switch (Environment.OSVersion.Platform)
+            {
+                case PlatformID.Unix:
+                    userHome = Environment.GetEnvironmentVariable("HOME");
+                    break;
+                default:
+                    userHome = Environment.ExpandEnvironmentVariables("%HOMEDRIVE%%HOMEPATH%");
+                    break;
+            }
+            String dotCookieFilename = Path.Combine(userHome, ".erlang.cookie");
 
-	    try
-	    {
-		using (StreamReader sr = new StreamReader(dotCookieFilename))
-		{
-		    defaultCookie = sr.ReadLine().Trim();
-		}
-	    }
-	    catch (FileNotFoundException)
-	    {
-		defaultCookie = "";
-	    }
-	}
+            try
+            {
+                using (StreamReader sr = new StreamReader(dotCookieFilename))
+                {
+                    defaultCookie = sr.ReadLine().Trim();
+                }
+            }
+            catch (DirectoryNotFoundException)
+            {
+                defaultCookie = "";
+            }
+            catch (FileNotFoundException)
+            {
+                defaultCookie = "";
+            }
+        }
 
-	protected AbstractNode()
-	{
-	}
+        protected AbstractNode()
+        {
+        }
 
-	/**
-	 * Create a node with the given name and the default cookie.
-	 */
-	protected AbstractNode(String node) : this(node, defaultCookie)
-	{
-	}
+        /**
+         * Create a node with the given name and the default cookie.
+         */
+        protected AbstractNode(String node)
+            : this(node, defaultCookie)
+        {
+        }
 
-	/**
-	 * Create a node with the given name and cookie.
-	 */
-	protected AbstractNode(String name, String cookie)
-	{
-	    this.cookie = cookie;
+        /**
+         * Create a node with the given name and cookie.
+         */
+        protected AbstractNode(String name, String cookie)
+        {
+            this.cookie = cookie;
 
-	    int i = name.IndexOf('@', 0);
-	    if (i < 0)
-	    {
-		alive = name;
-		host = localHost;
-	    }
-	    else
-	    {
-		alive = name.Substring(0, i);
-		host = name.Substring(i + 1, name.Length - (i + 1));
-	    }
+            int i = name.IndexOf('@', 0);
+            if (i < 0)
+            {
+                alive = name;
+                host = localHost;
+            }
+            else
+            {
+                alive = name.Substring(0, i);
+                host = name.Substring(i + 1, name.Length - (i + 1));
+            }
 
-	    if (alive.Length > 0xff)
-	    {
-		alive = alive.Substring(0, 0xff);
-	    }
+            if (alive.Length > 0xff)
+            {
+                alive = alive.Substring(0, 0xff);
+            }
 
-	    node = alive + "@" + host;
-	}
-	
-	public int Flags
-	{
-	    get { return flags; }
-	    set { flags = value; }
-	}
+            node = alive + "@" + host;
+        }
 
-	/**
-	 * Get the name of this node.
-	 * 
-	 * @return the name of the node represented by this object.
-	 */
-	public String Node
-	{
-	    get { return node; }
-	    set { node = value; }
-	}
+        public int Flags
+        {
+            get { return flags; }
+            set { flags = value; }
+        }
 
-	/**
-	 * Get the hostname part of the nodename. Nodenames are composed of two
-	 * parts, an alivename and a hostname, separated by '@'. This method returns
-	 * the part of the nodename following the '@'.
-	 * 
-	 * @return the hostname component of the nodename.
-	 */
-	public String Host
-	{
-	    get { return host; }
-	    set { host = value; }
-	}
+        /**
+         * Get the name of this node.
+         * 
+         * @return the name of the node represented by this object.
+         */
+        public String Node
+        {
+            get { return node; }
+            set { node = value; }
+        }
 
-	/**
-	 * Get the alivename part of the hostname. Nodenames are composed of two
-	 * parts, an alivename and a hostname, separated by '@'. This method returns
-	 * the part of the nodename preceding the '@'.
-	 * 
-	 * @return the alivename component of the nodename.
-	 */
-	public String Alive
-	{
-	    get { return alive; }
-	    set { alive = value; }
-	}
+        /**
+         * Get the hostname part of the nodename. Nodenames are composed of two
+         * parts, an alivename and a hostname, separated by '@'. This method returns
+         * the part of the nodename following the '@'.
+         * 
+         * @return the hostname component of the nodename.
+         */
+        public String Host
+        {
+            get { return host; }
+            set { host = value; }
+        }
 
-	/**
-	 * Get the authorization cookie used by this node.
-	 * 
-	 * @return the authorization cookie used by this node.
-	 */
-	public String Cookie
-	{
-	    get { return cookie; }
-	}
+        /**
+         * Get the alivename part of the hostname. Nodenames are composed of two
+         * parts, an alivename and a hostname, separated by '@'. This method returns
+         * the part of the nodename preceding the '@'.
+         * 
+         * @return the alivename component of the nodename.
+         */
+        public String Alive
+        {
+            get { return alive; }
+            set { alive = value; }
+        }
 
-	// package scope
-	internal int Type
-	{
-	    get { return ntype; }
-	    set { ntype = value; }
-	}
+        /**
+         * Get the authorization cookie used by this node.
+         * 
+         * @return the authorization cookie used by this node.
+         */
+        public String Cookie
+        {
+            get { return cookie; }
+        }
 
-	// package scope
-	internal int DistHigh
-	{
-	    get { return distHigh; }
-	    set { distHigh = value; }
-	}
+        // package scope
+        internal int Type
+        {
+            get { return ntype; }
+            set { ntype = value; }
+        }
 
-	// package scope
-	internal int DistLow
-	{
-	    get { return distLow; }
-	    set { distLow = value; }
-	}
+        // package scope
+        internal int DistHigh
+        {
+            get { return distHigh; }
+            set { distHigh = value; }
+        }
 
-	// package scope: useless information?
-	internal int Proto
-	{
-	    get { return proto; }
-	    set { proto = value; }
-	}
+        // package scope
+        internal int DistLow
+        {
+            get { return distLow; }
+            set { distLow = value; }
+        }
 
-	// package scope
-	internal int Creation
-	{
-	    get { return creation; }
-	    set { creation = value; }
-	}
+        // package scope: useless information?
+        internal int Proto
+        {
+            get { return proto; }
+            set { proto = value; }
+        }
 
-	/**
-	 * Set the authorization cookie used by this node.
-	 * 
-	 * @return the previous authorization cookie used by this node.
-	 */
-	public String setCookie(String cookie)
-	{
-	    String prev = this.cookie;
-	    this.cookie = cookie;
-	    return prev;
-	}
+        // package scope
+        internal int Creation
+        {
+            get { return creation; }
+            set { creation = value; }
+        }
 
-	public override String ToString()
-	{
-	    return node;
-	}
+        /**
+         * Set the authorization cookie used by this node.
+         * 
+         * @return the previous authorization cookie used by this node.
+         */
+        public String setCookie(String cookie)
+        {
+            String prev = this.cookie;
+            this.cookie = cookie;
+            return prev;
+        }
+
+        public override String ToString()
+        {
+            return node;
+        }
     }
 }
