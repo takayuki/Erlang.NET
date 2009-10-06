@@ -72,6 +72,9 @@
 			<ReferencePath>../bin</ReferencePath>
 			<Reference name="System"/>
 			<Reference name="System.Configuration"/>
+			<Reference name="System.Configuration"/>
+			<Reference name="System.Configuration.Install"/>
+			<Reference name="System.ServiceProcess"/>
 			<Reference name="log4net"/>
 			<Reference name="Erlang.NET"/>
 			<Files>
