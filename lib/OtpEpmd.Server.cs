@@ -64,7 +64,9 @@ namespace Erlang.NET
 	    {
 		lock (this)
 		{
-		    return creation++;
+            int next = (creation % 3) + 1;
+            creation++;
+            return next;
 		}
 	    }
 	}
@@ -217,7 +219,9 @@ namespace Erlang.NET
 		    int len = ibuf.read2BE();
 		    byte[] alive = new byte[len];
 		    ibuf.readN(alive);
-		    ibuf.read2BE();
+		    int elen = ibuf.read2BE();
+            byte[] extra = new byte[elen];
+            ibuf.readN(extra);
 		    String name = OtpErlangString.newString(alive);
 		    OtpPublishedNode node = new OtpPublishedNode(name);
 		    node.Type = type;
