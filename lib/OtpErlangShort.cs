@@ -27,36 +27,38 @@ namespace Erlang.NET
     [Serializable]
     public class OtpErlangShort : OtpErlangLong
     {
-	// don't change this!
-	internal static readonly new long serialVersionUID = 7162345156603088099L;
+        // don't change this!
+        internal static readonly new long serialVersionUID = 7162345156603088099L;
 
-	/**
-	 * Create an Erlang integer from the given value.
-	 * 
-	 * @param s
-	 *                the short value to use.
-	 */
-	public OtpErlangShort(short s) : base(s)
-	{
-	}
+        /**
+         * Create an Erlang integer from the given value.
+         * 
+         * @param s
+         *                the short value to use.
+         */
+        public OtpErlangShort(short s)
+            : base(s)
+        {
+        }
 
-	/**
-	 * Create an Erlang integer from a stream containing an integer encoded in
-	 * Erlang external format.
-	 * 
-	 * @param buf
-	 *                the stream containing the encoded value.
-	 * 
-	 * @exception OtpErlangDecodeException
-	 *                    if the buffer does not contain a valid external
-	 *                    representation of an Erlang integer.
-	 * 
-	 * @exception OtpErlangRangeException
-	 *                    if the value is too large to be represented as a
-	 *                    short.
-	 */
-	public OtpErlangShort(OtpInputStream buf) : base(buf)
-	{
-	}
+        /**
+         * Create an Erlang integer from a stream containing an integer encoded in
+         * Erlang external format.
+         * 
+         * @param buf
+         *                the stream containing the encoded value.
+         * 
+         * @exception OtpErlangDecodeException
+         *                    if the buffer does not contain a valid external
+         *                    representation of an Erlang integer.
+         * 
+         * @exception OtpErlangRangeException
+         *                    if the value is too large to be represented as a
+         *                    short.
+         */
+        public OtpErlangShort(OtpInputStream buf)
+            : base(buf)
+        {
+        }
     }
 }

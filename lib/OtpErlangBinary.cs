@@ -28,63 +28,66 @@ namespace Erlang.NET
     [Serializable]
     public class OtpErlangBinary : OtpErlangBitstr
     {
-	// don't change this!
-	internal static readonly new long serialVersionUID = -3781009633593609217L;
+        // don't change this!
+        internal static readonly new long serialVersionUID = -3781009633593609217L;
 
-	/**
-	 * Create a binary from a byte array
-	 * 
-	 * @param bin
-	 *                the array of bytes from which to create the binary.
-	 */
-	public OtpErlangBinary(byte[] bin) : base(bin)
-	{
-	}
+        /**
+         * Create a binary from a byte array
+         * 
+         * @param bin
+         *                the array of bytes from which to create the binary.
+         */
+        public OtpErlangBinary(byte[] bin)
+            : base(bin)
+        {
+        }
 
-	/**
-	 * Create a binary from a stream containing a binary encoded in Erlang
-	 * external format.
-	 * 
-	 * @param buf
-	 *                the stream containing the encoded binary.
-	 * 
-	 * @exception OtpErlangDecodeException
-	 *                    if the buffer does not contain a valid external
-	 *                    representation of an Erlang binary.
-	 */
-	public OtpErlangBinary(OtpInputStream buf) : base(new byte[0])
-	{
-	    bin = buf.read_binary();
-	    pad_bits = 0;
-	}
+        /**
+         * Create a binary from a stream containing a binary encoded in Erlang
+         * external format.
+         * 
+         * @param buf
+         *                the stream containing the encoded binary.
+         * 
+         * @exception OtpErlangDecodeException
+         *                    if the buffer does not contain a valid external
+         *                    representation of an Erlang binary.
+         */
+        public OtpErlangBinary(OtpInputStream buf)
+            : base(new byte[0])
+        {
+            bin = buf.read_binary();
+            pad_bits = 0;
+        }
 
-	/**
-	 * Create a binary from an arbitrary Java Object. The object must implement
-	 * java.io.Serializable or java.io.Externalizable.
-	 * 
-	 * @param o
-	 *                the object to serialize and create this binary from.
-	 */
-	public OtpErlangBinary(Object o) : base(o)
-	{
-	}
+        /**
+         * Create a binary from an arbitrary Java Object. The object must implement
+         * java.io.Serializable or java.io.Externalizable.
+         * 
+         * @param o
+         *                the object to serialize and create this binary from.
+         */
+        public OtpErlangBinary(Object o)
+            : base(o)
+        {
+        }
 
-	/**
-	 * Convert this binary to the equivalent Erlang external representation.
-	 * 
-	 * @param buf
-	 *                an output stream to which the encoded binary should be
-	 *                written.
-	 */
-	public override void encode(OtpOutputStream buf)
-	{
-	    buf.write_binary(bin);
-	}
+        /**
+         * Convert this binary to the equivalent Erlang external representation.
+         * 
+         * @param buf
+         *                an output stream to which the encoded binary should be
+         *                written.
+         */
+        public override void encode(OtpOutputStream buf)
+        {
+            buf.write_binary(bin);
+        }
 
-	public override Object Clone()
-	{
-	    OtpErlangBinary that = (OtpErlangBinary)base.Clone();
-	    return that;
-	}
+        public override Object Clone()
+        {
+            OtpErlangBinary that = (OtpErlangBinary)base.Clone();
+            return that;
+        }
     }
 }

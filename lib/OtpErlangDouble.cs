@@ -30,115 +30,115 @@ namespace Erlang.NET
     [Serializable]
     public class OtpErlangDouble : OtpErlangObject
     {
-	// don't change this!
-	internal static readonly new long serialVersionUID = 132947104811974021L;
+        // don't change this!
+        internal static readonly new long serialVersionUID = 132947104811974021L;
 
-	private readonly double d;
+        private readonly double d;
 
-	/**
-	 * Create an Erlang float from the given double value.
-	 */
-	public OtpErlangDouble(double d)
-	{
-	    this.d = d;
-	}
+        /**
+         * Create an Erlang float from the given double value.
+         */
+        public OtpErlangDouble(double d)
+        {
+            this.d = d;
+        }
 
-	/**
-	 * Create an Erlang float from a stream containing a double encoded in
-	 * Erlang external format.
-	 * 
-	 * @param buf
-	 *                the stream containing the encoded value.
-	 * 
-	 * @exception OtpErlangDecodeException
-	 *                    if the buffer does not contain a valid external
-	 *                    representation of an Erlang float.
-	 */
-	public OtpErlangDouble(OtpInputStream buf)
-	{
-	    d = buf.read_double();
-	}
+        /**
+         * Create an Erlang float from a stream containing a double encoded in
+         * Erlang external format.
+         * 
+         * @param buf
+         *                the stream containing the encoded value.
+         * 
+         * @exception OtpErlangDecodeException
+         *                    if the buffer does not contain a valid external
+         *                    representation of an Erlang float.
+         */
+        public OtpErlangDouble(OtpInputStream buf)
+        {
+            d = buf.read_double();
+        }
 
-	/**
-	 * Get the value, as a double.
-	 * 
-	 * @return the value of this object, as a double.
-	 */
-	public double doubleValue()
-	{
-	    return d;
-	}
+        /**
+         * Get the value, as a double.
+         * 
+         * @return the value of this object, as a double.
+         */
+        public double doubleValue()
+        {
+            return d;
+        }
 
-	/**
-	 * Get the value, as a float.
-	 * 
-	 * @return the value of this object, as a float.
-	 * 
-	 * @exception OtpErlangRangeException
-	 *                    if the value cannot be represented as a float.
-	 */
-	public float floatValue()
-	{
-	    float f = (float) d;
+        /**
+         * Get the value, as a float.
+         * 
+         * @return the value of this object, as a float.
+         * 
+         * @exception OtpErlangRangeException
+         *                    if the value cannot be represented as a float.
+         */
+        public float floatValue()
+        {
+            float f = (float)d;
 
-	    if (f != d)
-	    {
-		throw new OtpErlangRangeException("Value too large for float: " + d);
-	    }
+            if (f != d)
+            {
+                throw new OtpErlangRangeException("Value too large for float: " + d);
+            }
 
-	    return f;
-	}
+            return f;
+        }
 
-	/**
-	 * Get the string representation of this double.
-	 * 
-	 * @return the string representation of this double.
-	 */
-	public override String ToString()
-	{
-	    return "" + d;
-	}
+        /**
+         * Get the string representation of this double.
+         * 
+         * @return the string representation of this double.
+         */
+        public override String ToString()
+        {
+            return "" + d;
+        }
 
-	/**
-	 * Convert this double to the equivalent Erlang external representation.
-	 * 
-	 * @param buf
-	 *                an output stream to which the encoded value should be
-	 *                written.
-	 */
-	public override void encode(OtpOutputStream buf)
-	{
-	    buf.write_double(d);
-	}
+        /**
+         * Convert this double to the equivalent Erlang external representation.
+         * 
+         * @param buf
+         *                an output stream to which the encoded value should be
+         *                written.
+         */
+        public override void encode(OtpOutputStream buf)
+        {
+            buf.write_double(d);
+        }
 
-	/**
-	 * Determine if two floats are equal. Floats are equal if they contain the
-	 * same value.
-	 * 
-	 * @param o
-	 *                the float to compare to.
-	 * 
-	 * @return true if the floats have the same value.
-	 */
-	public override bool Equals(Object o)
-	{
-	    if (!(o is OtpErlangDouble))
-	    {
-		return false;
-	    }
+        /**
+         * Determine if two floats are equal. Floats are equal if they contain the
+         * same value.
+         * 
+         * @param o
+         *                the float to compare to.
+         * 
+         * @return true if the floats have the same value.
+         */
+        public override bool Equals(Object o)
+        {
+            if (!(o is OtpErlangDouble))
+            {
+                return false;
+            }
 
-	    OtpErlangDouble d = (OtpErlangDouble) o;
-	    return this.d == d.d;
-	}
-    
-	public override int GetHashCode()
-	{
-	    return base.GetHashCode();
-	}
+            OtpErlangDouble d = (OtpErlangDouble)o;
+            return this.d == d.d;
+        }
 
-	protected override int doHashCode()
-	{
-	    return d.GetHashCode();
-	}
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
+
+        protected override int doHashCode()
+        {
+            return d.GetHashCode();
+        }
     }
 }

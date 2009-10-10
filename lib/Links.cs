@@ -24,151 +24,152 @@ namespace Erlang.NET
     // package scope
     public class Links
     {
-	private Link[] links;
-	private int count;
+        private Link[] links;
+        private int count;
 
-	public Links() : this(10)
-	{
-	}
+        public Links()
+            : this(10)
+        {
+        }
 
-	public Links(int initialSize)
-	{
-	    links = new Link[initialSize];
-	    count = 0;
-	}
+        public Links(int initialSize)
+        {
+            links = new Link[initialSize];
+            count = 0;
+        }
 
-	public void addLink(OtpErlangPid local, OtpErlangPid remote)
-	{
-	    lock (this)
-	    {
-		if (find(local, remote) == -1)
-		{
-		    if (count >= links.Length)
-		    {
-			Link[] tmp = new Link[count * 2];
-			Array.Copy(links, 0, tmp, 0, count);
-			links = tmp;
-		    }
-		    links[count++] = new Link(local, remote);
-		}
-	    }
-	}
+        public void addLink(OtpErlangPid local, OtpErlangPid remote)
+        {
+            lock (this)
+            {
+                if (find(local, remote) == -1)
+                {
+                    if (count >= links.Length)
+                    {
+                        Link[] tmp = new Link[count * 2];
+                        Array.Copy(links, 0, tmp, 0, count);
+                        links = tmp;
+                    }
+                    links[count++] = new Link(local, remote);
+                }
+            }
+        }
 
-	public void removeLink(OtpErlangPid local, OtpErlangPid remote)
-	{
-	    lock (this)
-	    {
-		int i;
+        public void removeLink(OtpErlangPid local, OtpErlangPid remote)
+        {
+            lock (this)
+            {
+                int i;
 
-		if ((i = find(local, remote)) != -1)
-		{
-		    count--;
-		    links[i] = links[count];
-		    links[count] = null;
-		}
-	    }
-	}
+                if ((i = find(local, remote)) != -1)
+                {
+                    count--;
+                    links[i] = links[count];
+                    links[count] = null;
+                }
+            }
+        }
 
-	public bool exists(OtpErlangPid local, OtpErlangPid remote)
-	{
-	    lock (this)
-	    {
-		return find(local, remote) != -1;
-	    }
-	}
+        public bool exists(OtpErlangPid local, OtpErlangPid remote)
+        {
+            lock (this)
+            {
+                return find(local, remote) != -1;
+            }
+        }
 
-	public int find(OtpErlangPid local, OtpErlangPid remote)
-	{
-	    lock (this)
-	    {
-		for (int i = 0; i < count; i++)
-		{
-		    if (links[i].equals(local, remote))
-		    {
-			return i;
-		    }
-		}
-		return -1;
-	    }
-	}
+        public int find(OtpErlangPid local, OtpErlangPid remote)
+        {
+            lock (this)
+            {
+                for (int i = 0; i < count; i++)
+                {
+                    if (links[i].equals(local, remote))
+                    {
+                        return i;
+                    }
+                }
+                return -1;
+            }
+        }
 
-	public int Count
-	{
-	    get { return count; }
-	}
+        public int Count
+        {
+            get { return count; }
+        }
 
-	/* all local pids get notified about broken connection */
-	public OtpErlangPid[] localPids()
-	{
-	    lock (this)
-	    {
-		OtpErlangPid[] ret = null;
-		if (count != 0)
-		{
-		    ret = new OtpErlangPid[count];
-		    for (int i = 0; i < count; i++)
-		    {
-			ret[i] = links[i].Local;
-		    }
-		}
-		return ret;
-	    }
-	}
+        /* all local pids get notified about broken connection */
+        public OtpErlangPid[] localPids()
+        {
+            lock (this)
+            {
+                OtpErlangPid[] ret = null;
+                if (count != 0)
+                {
+                    ret = new OtpErlangPid[count];
+                    for (int i = 0; i < count; i++)
+                    {
+                        ret[i] = links[i].Local;
+                    }
+                }
+                return ret;
+            }
+        }
 
-	/* all remote pids get notified about failed pid */
-	public OtpErlangPid[] remotePids()
-	{
-	    lock (this)
-	    {
-		OtpErlangPid[] ret = null;
-		if (count != 0)
-		{
-		    ret = new OtpErlangPid[count];
-		    for (int i = 0; i < count; i++)
-		    {
-			ret[i] = links[i].Remote;
-		    }
-		}
-		return ret;
-	    }
-	}
+        /* all remote pids get notified about failed pid */
+        public OtpErlangPid[] remotePids()
+        {
+            lock (this)
+            {
+                OtpErlangPid[] ret = null;
+                if (count != 0)
+                {
+                    ret = new OtpErlangPid[count];
+                    for (int i = 0; i < count; i++)
+                    {
+                        ret[i] = links[i].Remote;
+                    }
+                }
+                return ret;
+            }
+        }
 
-	/* clears the link table, returns a copy */
-	public Link[] clearLinks()
-	{
-	    lock (this)
-	    {
-		Link[] ret = null;
-		if (count != 0)
-		{
-		    ret = new Link[count];
-		    for (int i = 0; i < count; i++)
-		    {
-			ret[i] = links[i];
-			links[i] = null;
-		    }
-		    count = 0;
-		}
-		return ret;
-	    }
-	}
+        /* clears the link table, returns a copy */
+        public Link[] clearLinks()
+        {
+            lock (this)
+            {
+                Link[] ret = null;
+                if (count != 0)
+                {
+                    ret = new Link[count];
+                    for (int i = 0; i < count; i++)
+                    {
+                        ret[i] = links[i];
+                        links[i] = null;
+                    }
+                    count = 0;
+                }
+                return ret;
+            }
+        }
 
-	/* returns a copy of the link table */
-	public Link[] GetLinks
-	{
-	    get
-	    {
-		lock (this)
-		{
-		    Link[] ret = null;
-		    if (count != 0)
-		    {
-			ret = new Link[count];
-			Array.Copy(links, 0, ret, 0, count);
-		    }
-		    return ret;
-		}
-	    }
-	}
+        /* returns a copy of the link table */
+        public Link[] GetLinks
+        {
+            get
+            {
+                lock (this)
+                {
+                    Link[] ret = null;
+                    if (count != 0)
+                    {
+                        ret = new Link[count];
+                        Array.Copy(links, 0, ret, 0, count);
+                    }
+                    return ret;
+                }
+            }
+        }
     }
 }

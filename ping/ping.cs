@@ -25,19 +25,19 @@ namespace Erlang.NET.Test
 {
     public class Ping
     {
-	static Ping()
-	{
-	    XmlConfigurator.Configure();
-	}
+        static Ping()
+        {
+            XmlConfigurator.Configure();
+        }
 
-	public static void Main(string[] args)
-	{
-	    OtpNode pingNode = new OtpNode("ping");
-	    OtpNode pongNode = new OtpNode("pong");
-	    bool ok = pingNode.ping("pong", 10000);
-	    pingNode.close();
-	    pongNode.close();
-	    Environment.Exit(ok ? 0 : 1);
-	}
+        public static void Main(string[] args)
+        {
+            OtpNode pingNode = new OtpNode("ping");
+            OtpNode pongNode = new OtpNode("pong");
+            bool ok = pingNode.ping("pong", 10000);
+            pingNode.close();
+            pongNode.close();
+            Environment.Exit(ok ? 0 : 1);
+        }
     }
 }

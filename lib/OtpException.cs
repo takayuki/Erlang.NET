@@ -26,18 +26,20 @@ namespace Erlang.NET
      */
     public abstract class OtpException : Exception
     {
-	/**
-	 * Provides no message.
-	 */
-	public OtpException() : base()
-	{
-	}
+        /**
+         * Provides no message.
+         */
+        public OtpException()
+            : base()
+        {
+        }
 
-	/**
-	 * Provides a detailed message.
-	 */
-	public OtpException(string msg) : base (msg)
-	{
-	}
+        /**
+         * Provides a detailed message.
+         */
+        public OtpException(string msg)
+            : base(msg)
+        {
+        }
     }
 }

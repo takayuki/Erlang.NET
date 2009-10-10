@@ -28,70 +28,72 @@ namespace Erlang.NET
      */
     public class OtpPeer : AbstractNode
     {
-	private int distChoose = 0;
+        private int distChoose = 0;
 
-	public int DistChoose
-	{
-	    get { return distChoose; }
-	    set { distChoose = value; }
-	}
+        public int DistChoose
+        {
+            get { return distChoose; }
+            set { distChoose = value; }
+        }
 
-	/*
-	 * this is set by OtpConnection and is the highest
-	 * common protocol version we both support
-	 */
+        /*
+         * this is set by OtpConnection and is the highest
+         * common protocol version we both support
+         */
 
-	public OtpPeer() : base()
-	{
-	}
+        public OtpPeer()
+            : base()
+        {
+        }
 
-	/**
-	 * Create a peer node.
-	 * 
-	 * @param node
-	 *                the name of the node.
-	 */
-	public OtpPeer(String node) : base(node)
-	{
-	}
+        /**
+         * Create a peer node.
+         * 
+         * @param node
+         *                the name of the node.
+         */
+        public OtpPeer(String node)
+            : base(node)
+        {
+        }
 
-	/**
-	 * Create a connection to a remote node.
-	 * 
-	 * @param self
-	 *                the local node from which you wish to connect.
-	 * 
-	 * @return a connection to the remote node.
-	 * 
-	 * @exception java.net.UnknownHostException
-	 *                    if the remote host could not be found.
-	 * 
-	 * @exception java.io.IOException
-	 *                    if it was not possible to connect to the remote node.
-	 * 
-	 * @exception OtpAuthException
-	 *                    if the connection was refused by the remote node.
-	 * 
-	 * @deprecated Use the corresponding method in {@link OtpSelf} instead.
-	 */
-	[Obsolete]
-	public OtpConnection connect(OtpSelf self)
-	{
-	    return new OtpConnection(self, this);
-	}
+        /**
+         * Create a connection to a remote node.
+         * 
+         * @param self
+         *                the local node from which you wish to connect.
+         * 
+         * @return a connection to the remote node.
+         * 
+         * @exception java.net.UnknownHostException
+         *                    if the remote host could not be found.
+         * 
+         * @exception java.io.IOException
+         *                    if it was not possible to connect to the remote node.
+         * 
+         * @exception OtpAuthException
+         *                    if the connection was refused by the remote node.
+         * 
+         * @deprecated Use the corresponding method in {@link OtpSelf} instead.
+         */
+        [Obsolete]
+        public OtpConnection connect(OtpSelf self)
+        {
+            return new OtpConnection(self, this);
+        }
 
-	// package
-	/*
-	 * Get the port number used by the remote node.
-	 * 
-	 * @return the port number used by the remote node, or 0 if the node was not
-	 * registered with the port mapper.
-	 * 
-	 * @exception java.io.IOException if the port mapper could not be contacted.
-	 */
-	internal int port()
-	{
-	    return OtpEpmd.lookupPort(this);
-	}
+        // package
+        /*
+         * Get the port number used by the remote node.
+         * 
+         * @return the port number used by the remote node, or 0 if the node was not
+         * registered with the port mapper.
+         * 
+         * @exception java.io.IOException if the port mapper could not be contacted.
+         */
+        internal int port()
+        {
+            return OtpEpmd.lookupPort(this);
+        }
     }
 }

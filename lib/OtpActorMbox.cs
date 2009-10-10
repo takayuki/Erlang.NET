@@ -22,65 +22,65 @@ namespace Erlang.NET
 {
     public class OtpActorMbox : OtpMbox
     {
-	protected readonly OtpActorSched sched;
-	protected OtpActorSched.OtpActorSchedTask task;
+        protected readonly OtpActorSched sched;
+        protected OtpActorSched.OtpActorSchedTask task;
 
-	public OtpActorSched.OtpActorSchedTask Task
-	{
-	    get { return task; }
-	    set { task = value; }
-	}
+        public OtpActorSched.OtpActorSchedTask Task
+        {
+            get { return task; }
+            set { task = value; }
+        }
 
-	internal OtpActorMbox(OtpActorSched sched, OtpNode home, OtpErlangPid self, String name)
-	    : base(home, self, name)
-	{
-	    this.sched = sched;
-	}
+        internal OtpActorMbox(OtpActorSched sched, OtpNode home, OtpErlangPid self, String name)
+            : base(home, self, name)
+        {
+            this.sched = sched;
+        }
 
-	internal OtpActorMbox(OtpActorSched sched, OtpNode home, OtpErlangPid self)
-	    : base(home, self, null)
-	{
-	    this.sched = sched;
-	}
+        internal OtpActorMbox(OtpActorSched sched, OtpNode home, OtpErlangPid self)
+            : base(home, self, null)
+        {
+            this.sched = sched;
+        }
 
-	public override void close()
-	{
-	    base.close();
-	    sched.canncel(this);
-	}
+        public override void close()
+        {
+            base.close();
+            sched.canncel(this);
+        }
 
-	public override OtpMsg receiveMsg()
-	{
-	    Object m = Queue.tryGet();
+        public override OtpMsg receiveMsg()
+        {
+            Object m = Queue.tryGet();
 
-	    if (m == null)
-	    {
-		return null;
-	    }
-	    else
-	    {
-		return (OtpMsg)m;
-	    }
-	}
+            if (m == null)
+            {
+                return null;
+            }
+            else
+            {
+                return (OtpMsg)m;
+            }
+        }
 
-	public override OtpMsg receiveMsg(long timeout)
-	{
-	    Object m = Queue.get(timeout);
+        public override OtpMsg receiveMsg(long timeout)
+        {
+            Object m = Queue.get(timeout);
 
-	    if (m == null)
-	    {
-		return null;
-	    }
-	    else
-	    {
-		return (OtpMsg)m;
-	    }
-	}
+            if (m == null)
+            {
+                return null;
+            }
+            else
+            {
+                return (OtpMsg)m;
+            }
+        }
 
-	public override void deliver(OtpMsg m)
-	{
-	    base.deliver(m);
-	    sched.notify(this);
-	}
+        public override void deliver(OtpMsg m)
+        {
+            base.deliver(m);
+            sched.notify(this);
+        }
     }
 }

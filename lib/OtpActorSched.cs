@@ -27,190 +27,191 @@ namespace Erlang.NET
 {
     public class OtpActorSched : ThreadBase
     {
-	private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
-	public class OtpActorSchedTask
-	{
-	    private readonly OtpActor actor;
-	    private readonly IEnumerator<OtpActor.Continuation> enumerator;
-	    private volatile bool active = false;
+        public class OtpActorSchedTask
+        {
+            private readonly OtpActor actor;
+            private readonly IEnumerator<OtpActor.Continuation> enumerator;
+            private volatile bool active = false;
 
-	    public bool Active
-	    {
-		get { return active; }
-		set { active = value; }
-	    }
+            public bool Active
+            {
+                get { return active; }
+                set { active = value; }
+            }
 
-	    public OtpActor Actor
-	    {
-		get { return actor; }
-	    }
+            public OtpActor Actor
+            {
+                get { return actor; }
+            }
 
-	    public IEnumerator<OtpActor.Continuation> Enumerator
-	    {
-		get { return enumerator; }
-	    }
+            public IEnumerator<OtpActor.Continuation> Enumerator
+            {
+                get { return enumerator; }
+            }
 
-	    public OtpActorSchedTask(OtpActor actor)
-	    {
-		actor.Task = this;
-		this.actor = actor;
-		this.enumerator = actor.GetEnumerator();
-	    }
-	}
+            public OtpActorSchedTask(OtpActor actor)
+            {
+                actor.Task = this;
+                this.actor = actor;
+                this.enumerator = actor.GetEnumerator();
+            }
+        }
 
-	private Queue<OtpActorSchedTask> runnable = new Queue<OtpActorSchedTask>();
+        private Queue<OtpActorSchedTask> runnable = new Queue<OtpActorSchedTask>();
 
-	public OtpActorSched() : base("OtpActorSched", true)
-	{
-	    base.start();
-	}
+        public OtpActorSched()
+            : base("OtpActorSched", true)
+        {
+            base.start();
+        }
 
-	public void react(OtpActor actor)
-	{
-	    OtpActorSchedTask task = new OtpActorSchedTask(actor);
-	    IEnumerator<OtpActor.Continuation> enumerator = task.Enumerator;
+        public void react(OtpActor actor)
+        {
+            OtpActorSchedTask task = new OtpActorSchedTask(actor);
+            IEnumerator<OtpActor.Continuation> enumerator = task.Enumerator;
 
-	    if (!enumerator.MoveNext())
-	    {
-		task.Active = false;
-	    }
-	    else
-	    {
-		Monitor.Enter(runnable);
-		try
-		{
-		    task.Active = true;
-		    runnable.Enqueue(task);
-		    if (runnable.Count == 1)
-		    {
-			Monitor.Pulse(runnable);
-		    }
-		}
-		finally
-		{
-		    Monitor.Exit(runnable);
-		}
-	    }
-	}
+            if (!enumerator.MoveNext())
+            {
+                task.Active = false;
+            }
+            else
+            {
+                Monitor.Enter(runnable);
+                try
+                {
+                    task.Active = true;
+                    runnable.Enqueue(task);
+                    if (runnable.Count == 1)
+                    {
+                        Monitor.Pulse(runnable);
+                    }
+                }
+                finally
+                {
+                    Monitor.Exit(runnable);
+                }
+            }
+        }
 
-	public void canncel(OtpActorMbox mbox)
-	{
-	    OtpActorSchedTask task = mbox.Task;
+        public void canncel(OtpActorMbox mbox)
+        {
+            OtpActorSchedTask task = mbox.Task;
 
-	    Monitor.Enter(runnable);
-	    try
-	    {
-		lock (task)
-		{
-		    task.Active = false;
-		}
-	    }
-	    finally
-	    {
-		Monitor.Exit(runnable);
-	    }
-	}
+            Monitor.Enter(runnable);
+            try
+            {
+                lock (task)
+                {
+                    task.Active = false;
+                }
+            }
+            finally
+            {
+                Monitor.Exit(runnable);
+            }
+        }
 
-	public void notify(OtpActorMbox mbox)
-	{
-	    OtpActorSchedTask task = mbox.Task;
+        public void notify(OtpActorMbox mbox)
+        {
+            OtpActorSchedTask task = mbox.Task;
 
-	    Monitor.Enter(runnable);
-	    try
-	    {
-		Monitor.Enter(task);
-		try
-		{
-		    if (mbox.Task.Active)
-		    {
-			runnable.Enqueue(mbox.Task);
-			if (runnable.Count == 1)
-			{
-			    Monitor.Pulse(runnable);
-			}
-		    }
-		}
-		finally
-		{
-		    Monitor.Exit(task);
-		}
-	    }
-	    finally
-	    {
-		Monitor.Exit(runnable);
-	    }
-	}
+            Monitor.Enter(runnable);
+            try
+            {
+                Monitor.Enter(task);
+                try
+                {
+                    if (mbox.Task.Active)
+                    {
+                        runnable.Enqueue(mbox.Task);
+                        if (runnable.Count == 1)
+                        {
+                            Monitor.Pulse(runnable);
+                        }
+                    }
+                }
+                finally
+                {
+                    Monitor.Exit(task);
+                }
+            }
+            finally
+            {
+                Monitor.Exit(runnable);
+            }
+        }
 
-	public override void run()
-	{
-	    while (true)
-	    {
-		schedule();
-	    }
-	}
+        public override void run()
+        {
+            while (true)
+            {
+                schedule();
+            }
+        }
 
-	private void schedule()
-	{
-	    Monitor.Enter(runnable);
-	    try
-	    {
-		while (runnable.Count == 0)
-		{
-		    Monitor.Wait(runnable);
-		}
+        private void schedule()
+        {
+            Monitor.Enter(runnable);
+            try
+            {
+                while (runnable.Count == 0)
+                {
+                    Monitor.Wait(runnable);
+                }
 
-		OtpActorSchedTask task = runnable.Dequeue();
-		OtpActor actor = task.Actor;
-		IEnumerator<OtpActor.Continuation> enumerator = task.Enumerator;
+                OtpActorSchedTask task = runnable.Dequeue();
+                OtpActor actor = task.Actor;
+                IEnumerator<OtpActor.Continuation> enumerator = task.Enumerator;
 
-		Monitor.Enter(task);
-		try
-		{
-		    if (task.Active)
-		    {
-			OtpMsg msg = actor.Mbox.receiveMsg();
+                Monitor.Enter(task);
+                try
+                {
+                    if (task.Active)
+                    {
+                        OtpMsg msg = actor.Mbox.receiveMsg();
 
-			if (msg == null)
-			{
-			    return;
-			}
+                        if (msg == null)
+                        {
+                            return;
+                        }
 
-			ThreadPool.QueueUserWorkItem
-			    (delegate (Object state)
-			     {
-				 Monitor.Enter(task);
-				 try
-				 {
-				     OtpActor.Continuation cont = enumerator.Current;
+                        ThreadPool.QueueUserWorkItem
+                            (delegate(Object state)
+                             {
+                                 Monitor.Enter(task);
+                                 try
+                                 {
+                                     OtpActor.Continuation cont = enumerator.Current;
 
-				     cont(msg);
+                                     cont(msg);
 
-				     if (!enumerator.MoveNext())
-				     {
-					 task.Active = false;
-				     }
-				 }
-				 catch (Exception e)
-				 {
-				     log.Info("Exception was thrown from running actor: " + e.Message);
-				 }
-				 finally
-				 {
-				     Monitor.Exit(task);
-				 }
-			     });
-		    }
-		}
-		finally
-		{
-		    Monitor.Exit(task);
-		}
-	    }
-	    finally
-	    {
-		Monitor.Exit(runnable);
-	    }
-	}
+                                     if (!enumerator.MoveNext())
+                                     {
+                                         task.Active = false;
+                                     }
+                                 }
+                                 catch (Exception e)
+                                 {
+                                     log.Info("Exception was thrown from running actor: " + e.Message);
+                                 }
+                                 finally
+                                 {
+                                     Monitor.Exit(task);
+                                 }
+                             });
+                    }
+                }
+                finally
+                {
+                    Monitor.Exit(task);
+                }
+            }
+            finally
+            {
+                Monitor.Exit(runnable);
+            }
+        }
     }
 }

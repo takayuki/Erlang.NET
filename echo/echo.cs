@@ -28,48 +28,49 @@ namespace Erlang.NET.Test
 {
     public class Echo
     {
-	private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
-	static Echo()
-	{
-	    XmlConfigurator.Configure();
-	}
+        static Echo()
+        {
+            XmlConfigurator.Configure();
+        }
 
-	public class OtpEchoActor : OtpActor
-	{
-	    public OtpEchoActor(OtpActorMbox mbox) : base(mbox)
-	    {
-	    }
+        public class OtpEchoActor : OtpActor
+        {
+            public OtpEchoActor(OtpActorMbox mbox)
+                : base(mbox)
+            {
+            }
 
-	    public override IEnumerator<Continuation> GetEnumerator()
-	    {
-		OtpMbox mbox = base.Mbox;
-		OtpMsg msg = null;
+            public override IEnumerator<Continuation> GetEnumerator()
+            {
+                OtpMbox mbox = base.Mbox;
+                OtpMsg msg = null;
 
-		while (true)
-		{
-		    yield return (delegate (OtpMsg m) { msg = m; });
-		    log.Debug("-> ECHO " + msg.getMsg());
-		    OtpErlangTuple t = (OtpErlangTuple)msg.getMsg();
-		    OtpErlangPid sender = (OtpErlangPid)t.elementAt(0);
-		    OtpErlangObject[] v = { mbox.Self, t.elementAt(1) };
-		    mbox.send(sender,new OtpErlangTuple(v));
-		}
-	    }
-	}
+                while (true)
+                {
+                    yield return (delegate(OtpMsg m) { msg = m; });
+                    log.Debug("-> ECHO " + msg.getMsg());
+                    OtpErlangTuple t = (OtpErlangTuple)msg.getMsg();
+                    OtpErlangPid sender = (OtpErlangPid)t.elementAt(0);
+                    OtpErlangObject[] v = { mbox.Self, t.elementAt(1) };
+                    mbox.send(sender, new OtpErlangTuple(v));
+                }
+            }
+        }
 
-	public static void Main(string[] args)
-	{
-	    OtpNode a = new OtpNode("a");
-	    OtpNode b = new OtpNode("b");
-	    OtpActorMbox echo = (OtpActorMbox)b.createMbox("echo", false);
-	    b.react(new OtpEchoActor(echo));
-	    OtpMbox echoback = a.createMbox("echoback", true);
-	    OtpErlangObject[] v = { echoback.Self, new OtpErlangString("Hello, World!") };
-	    echoback.send(echo.Self, new OtpErlangTuple(v));
-	    log.Debug("<- ECHO (back) " + echoback.receive());
-	    b.close();
-	    a.close();
-	}
+        public static void Main(string[] args)
+        {
+            OtpNode a = new OtpNode("a");
+            OtpNode b = new OtpNode("b");
+            OtpActorMbox echo = (OtpActorMbox)b.createMbox("echo", false);
+            b.react(new OtpEchoActor(echo));
+            OtpMbox echoback = a.createMbox("echoback", true);
+            OtpErlangObject[] v = { echoback.Self, new OtpErlangString("Hello, World!") };
+            echoback.send(echo.Self, new OtpErlangTuple(v));
+            log.Debug("<- ECHO (back) " + echoback.receive());
+            b.close();
+            a.close();
+        }
     }
 }

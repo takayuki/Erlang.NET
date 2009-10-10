@@ -29,11 +29,12 @@ namespace Erlang.NET
      */
     public class OtpErlangDecodeException : OtpErlangException
     {
-	/**
-	 * Provides a detailed message.
-	 */
-	public OtpErlangDecodeException(string msg) : base(msg)
-	{
-	}
+        /**
+         * Provides a detailed message.
+         */
+        public OtpErlangDecodeException(string msg)
+            : base(msg)
+        {
+        }
     }
 }

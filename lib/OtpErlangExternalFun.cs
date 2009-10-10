@@ -24,59 +24,60 @@ namespace Erlang.NET
     [Serializable]
     public class OtpErlangExternalFun : OtpErlangObject
     {
-	// don't change this!
-	internal static readonly new long serialVersionUID = 6443965570641913886L;
+        // don't change this!
+        internal static readonly new long serialVersionUID = 6443965570641913886L;
 
-	private String module;
-	private String function;
-	private int arity;
+        private String module;
+        private String function;
+        private int arity;
 
-	public OtpErlangExternalFun(String module, String function, int arity) : base()
-	{
-	    this.module = module;
-	    this.function = function;
-	    this.arity = arity;
-	}
+        public OtpErlangExternalFun(String module, String function, int arity)
+            : base()
+        {
+            this.module = module;
+            this.function = function;
+            this.arity = arity;
+        }
 
-	public OtpErlangExternalFun(OtpInputStream buf)
-	{
-	    OtpErlangExternalFun f = buf.read_external_fun();
-	    module = f.module;
-	    function = f.function;
-	    arity = f.arity;
-	}
+        public OtpErlangExternalFun(OtpInputStream buf)
+        {
+            OtpErlangExternalFun f = buf.read_external_fun();
+            module = f.module;
+            function = f.function;
+            arity = f.arity;
+        }
 
-	public override void encode(OtpOutputStream buf)
-	{
-	    buf.write_external_fun(module, function, arity);
-	}
+        public override void encode(OtpOutputStream buf)
+        {
+            buf.write_external_fun(module, function, arity);
+        }
 
-	public override bool Equals(Object o)
-	{
-	    if (!(o is OtpErlangExternalFun))
-	    {
-		return false;
-	    }
-	    OtpErlangExternalFun f = (OtpErlangExternalFun) o;
-	    return module.Equals(f.module) && function.Equals(f.function) && arity == f.arity;
-	}
+        public override bool Equals(Object o)
+        {
+            if (!(o is OtpErlangExternalFun))
+            {
+                return false;
+            }
+            OtpErlangExternalFun f = (OtpErlangExternalFun)o;
+            return module.Equals(f.module) && function.Equals(f.function) && arity == f.arity;
+        }
 
-	public override int GetHashCode()
-	{
-	    return base.GetHashCode();
-	}
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
 
-	protected override int doHashCode()
-	{
-	    OtpErlangObject.Hash hash = new OtpErlangObject.Hash(14);
-	    hash.combine(module.GetHashCode(), function.GetHashCode());
-	    hash.combine(arity);
-	    return hash.valueOf();
-	}    
+        protected override int doHashCode()
+        {
+            OtpErlangObject.Hash hash = new OtpErlangObject.Hash(14);
+            hash.combine(module.GetHashCode(), function.GetHashCode());
+            hash.combine(arity);
+            return hash.valueOf();
+        }
 
-	public override String ToString()
-	{
-	    return "#Fun<" + module + "." + function + "." + arity + ">";
-	}
+        public override String ToString()
+        {
+            return "#Fun<" + module + "." + function + "." + arity + ">";
+        }
     }
 }

@@ -25,66 +25,66 @@ namespace Erlang.NET
 {
     public class BufferedTcpClient : IDisposable
     {
-	private readonly TcpClient client;
-	private readonly Stream inputStream;
-	private readonly Stream outputStream;
+        private readonly TcpClient client;
+        private readonly Stream inputStream;
+        private readonly Stream outputStream;
 
-	public BufferedTcpClient(TcpClient client)
-	{
-	    this.client = client;
-	    this.inputStream = new BufferedStream(this.client.GetStream());
-	    this.outputStream = this.client.GetStream();
+        public BufferedTcpClient(TcpClient client)
+        {
+            this.client = client;
+            this.inputStream = new BufferedStream(this.client.GetStream());
+            this.outputStream = this.client.GetStream();
 
-	    KeepAlive = true;
-	}
+            KeepAlive = true;
+        }
 
-	public bool NoDelay
-	{
-	    get
-	    {
-		return (bool)client.Client.GetSocketOption(SocketOptionLevel.Tcp, SocketOptionName.NoDelay);
-	    }
-	    set
-	    {
-		client.Client.SetSocketOption(SocketOptionLevel.Tcp, SocketOptionName.NoDelay, value);
-	    }
-	}
+        public bool NoDelay
+        {
+            get
+            {
+                return (bool)client.Client.GetSocketOption(SocketOptionLevel.Tcp, SocketOptionName.NoDelay);
+            }
+            set
+            {
+                client.Client.SetSocketOption(SocketOptionLevel.Tcp, SocketOptionName.NoDelay, value);
+            }
+        }
 
-	public bool KeepAlive
-	{
-	    get
-	    {
-		return (bool)client.Client.GetSocketOption(SocketOptionLevel.Socket, SocketOptionName.KeepAlive);
-	    }
-	    set
-	    {
-		client.Client.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.KeepAlive, value);
-	    }
-	}
+        public bool KeepAlive
+        {
+            get
+            {
+                return (bool)client.Client.GetSocketOption(SocketOptionLevel.Socket, SocketOptionName.KeepAlive);
+            }
+            set
+            {
+                client.Client.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.KeepAlive, value);
+            }
+        }
 
-	public Socket Client
-	{
-	    get { return client.Client; }
-	}
+        public Socket Client
+        {
+            get { return client.Client; }
+        }
 
-	public Stream GetInputStream()
-	{
-	    return inputStream;
-	}
+        public Stream GetInputStream()
+        {
+            return inputStream;
+        }
 
-	public Stream GetOutputStream()
-	{
-	    return outputStream;
-	}
+        public Stream GetOutputStream()
+        {
+            return outputStream;
+        }
 
-	public void Close()
-	{
-	    client.GetStream().Close();
-	    client.Close();
-	}
+        public void Close()
+        {
+            client.GetStream().Close();
+            client.Close();
+        }
 
-	public void Dispose()
-	{
-	}
+        public void Dispose()
+        {
+        }
     }
 }

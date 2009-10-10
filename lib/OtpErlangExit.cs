@@ -35,84 +35,88 @@ namespace Erlang.NET
      */
     public class OtpErlangExit : OtpErlangException
     {
-	internal static readonly new long serialVersionUID = 1L;
+        internal static readonly new long serialVersionUID = 1L;
 
-	OtpErlangObject reason = null;
-	OtpErlangPid pid = null;
+        OtpErlangObject reason = null;
+        OtpErlangPid pid = null;
 
-	/**
-	 * Create an OtpErlangExit exception with the given reason.
-	 * 
-	 * @param reason
-	 *                the reason this exit signal has been sent.
-	 */
-	public OtpErlangExit(OtpErlangObject reason) : base(reason.ToString())
-	{
-	    this.reason = reason;
-	}
+        /**
+         * Create an OtpErlangExit exception with the given reason.
+         * 
+         * @param reason
+         *                the reason this exit signal has been sent.
+         */
+        public OtpErlangExit(OtpErlangObject reason)
+            : base(reason.ToString())
+        {
+            this.reason = reason;
+        }
 
-	/**
-	 * <p>
-	 * Equivalent to <code>OtpErlangExit(new
-	 * OtpErlangAtom(reason)</code>.
-	 * </p>
-	 * 
-	 * @param reason
-	 *                the reason this exit signal has been sent.
-	 * 
-	 * @see #OtpErlangExit(OtpErlangObject)
-	 */
-	public OtpErlangExit(String reason) : this(new OtpErlangAtom(reason))
-	{
-	}
+        /**
+         * <p>
+         * Equivalent to <code>OtpErlangExit(new
+         * OtpErlangAtom(reason)</code>.
+         * </p>
+         * 
+         * @param reason
+         *                the reason this exit signal has been sent.
+         * 
+         * @see #OtpErlangExit(OtpErlangObject)
+         */
+        public OtpErlangExit(String reason)
+            : this(new OtpErlangAtom(reason))
+        {
+        }
 
-	/**
-	 * Create an OtpErlangExit exception with the given reason and sender pid.
-	 * 
-	 * @param reason
-	 *                the reason this exit signal has been sent.
-	 * 
-	 * @param pid
-	 *                the pid that sent this exit.
-	 */
-	public OtpErlangExit(OtpErlangObject reason, OtpErlangPid pid) : base(reason.ToString())
-	{
-	    this.reason = reason;
-	    this.pid = pid;
-	}
+        /**
+         * Create an OtpErlangExit exception with the given reason and sender pid.
+         * 
+         * @param reason
+         *                the reason this exit signal has been sent.
+         * 
+         * @param pid
+         *                the pid that sent this exit.
+         */
+        public OtpErlangExit(OtpErlangObject reason, OtpErlangPid pid)
+            : base(reason.ToString())
+        {
+            this.reason = reason;
+            this.pid = pid;
+        }
 
-	/**
-	 * <p>
-	 * Equivalent to <code>OtpErlangExit(new OtpErlangAtom(reason),
-	 * pid)</code>.
-	 * </p>
-	 * 
-	 * @param reason
-	 *                the reason this exit signal has been sent.
-	 * 
-	 * @param pid
-	 *                the pid that sent this exit.
-	 * 
-	 * @see #OtpErlangExit(OtpErlangObject, OtpErlangPid)
-	 */
-	public OtpErlangExit(String reason, OtpErlangPid pid) : this(new OtpErlangAtom(reason), pid)
-	{
-	}
+        /**
+         * <p>
+         * Equivalent to <code>OtpErlangExit(new OtpErlangAtom(reason),
+         * pid)</code>.
+         * </p>
+         * 
+         * @param reason
+         *                the reason this exit signal has been sent.
+         * 
+         * @param pid
+         *                the pid that sent this exit.
+         * 
+         * @see #OtpErlangExit(OtpErlangObject, OtpErlangPid)
+         */
+        public OtpErlangExit(String reason, OtpErlangPid pid)
+            : this(new OtpErlangAtom(reason), pid)
+        {
+        }
 
-	/**
-	 * Get the reason associated with this exit signal.
-	 */
-	public OtpErlangObject Reason
-	{
-	    get { return reason; }
-	}
+        /**
+         * Get the reason associated with this exit signal.
+         */
+        public OtpErlangObject Reason
+        {
+            get { return reason; }
+        }
 
-	/**
-	 * Get the pid that sent this exit.
-	 */
-	public OtpErlangPid Pid
-	{
-	    get { return pid; }
-	}
+        /**
+         * Get the pid that sent this exit.
+         */
+        public OtpErlangPid Pid
+        {
+            get { return pid; }
+        }
     }
 }

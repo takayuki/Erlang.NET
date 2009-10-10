@@ -27,32 +27,34 @@ namespace Erlang.NET
     [Serializable]
     public class OtpErlangFloat : OtpErlangDouble
     {
-	// don't change this!
-	internal static readonly new long serialVersionUID = -2231546377289456934L;
+        // don't change this!
+        internal static readonly new long serialVersionUID = -2231546377289456934L;
 
-	/**
-	 * Create an Erlang float from the given float value.
-	 */
-	public OtpErlangFloat(float f) : base(f)
-	{
-	}
+        /**
+         * Create an Erlang float from the given float value.
+         */
+        public OtpErlangFloat(float f)
+            : base(f)
+        {
+        }
 
-	/**
-	 * Create an Erlang float from a stream containing a float encoded in Erlang
-	 * external format.
-	 * 
-	 * @param buf
-	 *                the stream containing the encoded value.
-	 * 
-	 * @exception OtpErlangDecodeException
-	 *                    if the buffer does not contain a valid external
-	 *                    representation of an Erlang float.
-	 * 
-	 * @exception OtpErlangRangeException
-	 *                    if the value cannot be represented as a Java float.
-	 */
-	public OtpErlangFloat(OtpInputStream buf) : base(buf)
-	{
-	}
+        /**
+         * Create an Erlang float from a stream containing a float encoded in Erlang
+         * external format.
+         * 
+         * @param buf
+         *                the stream containing the encoded value.
+         * 
+         * @exception OtpErlangDecodeException
+         *                    if the buffer does not contain a valid external
+         *                    representation of an Erlang float.
+         * 
+         * @exception OtpErlangRangeException
+         *                    if the value cannot be represented as a Java float.
+         */
+        public OtpErlangFloat(OtpInputStream buf)
+            : base(buf)
+        {
+        }
     }
 }

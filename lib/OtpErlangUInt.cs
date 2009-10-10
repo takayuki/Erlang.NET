@@ -27,39 +27,41 @@ namespace Erlang.NET
     [Serializable]
     public class OtpErlangUInt : OtpErlangLong
     {
-	// don't change this!
-	internal static readonly new long serialVersionUID = -1450956122937471885L;
+        // don't change this!
+        internal static readonly new long serialVersionUID = -1450956122937471885L;
 
-	/**
-	 * Create an Erlang integer from the given value.
-	 * 
-	 * @param i
-	 *                the non-negative int value to use.
-	 * 
-	 * @exception OtpErlangRangeException
-	 *                    if the value is negative.
-	 */
-	public OtpErlangUInt(int i) : base(i)
-	{
-	}
+        /**
+         * Create an Erlang integer from the given value.
+         * 
+         * @param i
+         *                the non-negative int value to use.
+         * 
+         * @exception OtpErlangRangeException
+         *                    if the value is negative.
+         */
+        public OtpErlangUInt(int i)
+            : base(i)
+        {
+        }
 
-	/**
-	 * Create an Erlang integer from a stream containing an integer encoded in
-	 * Erlang external format.
-	 * 
-	 * @param buf
-	 *                the stream containing the encoded value.
-	 * 
-	 * @exception OtpErlangDecodeException
-	 *                    if the buffer does not contain a valid external
-	 *                    representation of an Erlang integer.
-	 * 
-	 * @exception OtpErlangRangeException
-	 *                    if the value is too large to be represented as an int,
-	 *                    or the value is negative.
-	 */
-	public OtpErlangUInt(OtpInputStream buf) : base(buf)
-	{
-	}
+        /**
+         * Create an Erlang integer from a stream containing an integer encoded in
+         * Erlang external format.
+         * 
+         * @param buf
+         *                the stream containing the encoded value.
+         * 
+         * @exception OtpErlangDecodeException
+         *                    if the buffer does not contain a valid external
+         *                    representation of an Erlang integer.
+         * 
+         * @exception OtpErlangRangeException
+         *                    if the value is too large to be represented as an int,
+         *                    or the value is negative.
+         */
+        public OtpErlangUInt(OtpInputStream buf)
+            : base(buf)
+        {
+        }
     }
 }

@@ -23,26 +23,26 @@ namespace Erlang.NET
 {
     public abstract class OtpActor
     {
-	public delegate void Continuation(OtpMsg msg);
+        public delegate void Continuation(OtpMsg msg);
 
-	private readonly OtpActorMbox mbox;
+        private readonly OtpActorMbox mbox;
 
-	public OtpActorMbox Mbox
-	{
-	    get { return mbox; }
-	}
+        public OtpActorMbox Mbox
+        {
+            get { return mbox; }
+        }
 
-	public OtpActorSched.OtpActorSchedTask Task
-	{
-	    get { return mbox.Task; }
-	    set { mbox.Task = value; }
-	}
+        public OtpActorSched.OtpActorSchedTask Task
+        {
+            get { return mbox.Task; }
+            set { mbox.Task = value; }
+        }
 
-	public OtpActor(OtpActorMbox mbox)
-	{
-	    this.mbox = mbox;
-	}
+        public OtpActor(OtpActorMbox mbox)
+        {
+            this.mbox = mbox;
+        }
 
-	public abstract IEnumerator<Continuation> GetEnumerator();
+        public abstract IEnumerator<Continuation> GetEnumerator();
     }
 }

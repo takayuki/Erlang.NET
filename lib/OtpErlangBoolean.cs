@@ -28,31 +28,33 @@ namespace Erlang.NET
     [Serializable]
     public class OtpErlangBoolean : OtpErlangAtom
     {
-	// don't change this!
-	internal static readonly new long serialVersionUID = 1087178844844988393L;
+        // don't change this!
+        internal static readonly new long serialVersionUID = 1087178844844988393L;
 
-	/**
-	 * Create a boolean from the given value
-	 * 
-	 * @param t
-	 *                the boolean value to represent as an atom.
-	 */
-	public OtpErlangBoolean(bool t) : base(t)
-	{
-	}
+        /**
+         * Create a boolean from the given value
+         * 
+         * @param t
+         *                the boolean value to represent as an atom.
+         */
+        public OtpErlangBoolean(bool t)
+            : base(t)
+        {
+        }
 
-	/**
-	 * Create a boolean from a stream containing an atom encoded in Erlang
-	 * external format. The value of the boolean will be true if the atom
-	 * represented by the stream is "true" without regard to case. For other
-	 * atom values, the boolean will have the value false.
-	 * 
-	 * @exception OtpErlangDecodeException
-	 *                    if the buffer does not contain a valid external
-	 *                    representation of an Erlang atom.
-	 */
-	public OtpErlangBoolean(OtpInputStream buf) : base(buf)
-	{
-	}
+        /**
+         * Create a boolean from a stream containing an atom encoded in Erlang
+         * external format. The value of the boolean will be true if the atom
+         * represented by the stream is "true" without regard to case. For other
+         * atom values, the boolean will have the value false.
+         * 
+         * @exception OtpErlangDecodeException
+         *                    if the buffer does not contain a valid external
+         *                    representation of an Erlang atom.
+         */
+        public OtpErlangBoolean(OtpInputStream buf)
+            : base(buf)
+        {
+        }
     }
 }

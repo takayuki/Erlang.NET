@@ -35,13 +35,14 @@ namespace Erlang.NET
      */
     public class OtpErlangRangeException : OtpErlangException
     {
-	internal static readonly new long serialVersionUID = 1L;
+        internal static readonly new long serialVersionUID = 1L;
 
-	/**
-	 * Provides a detailed message.
-	 */
-	public OtpErlangRangeException(String msg) : base(msg)
-	{
-	}
+        /**
+         * Provides a detailed message.
+         */
+        public OtpErlangRangeException(String msg)
+            : base(msg)
+        {
+        }
     }
 }

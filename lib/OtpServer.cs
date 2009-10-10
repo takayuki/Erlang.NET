@@ -53,60 +53,63 @@ namespace Erlang.NET
     [Obsolete]
     public class OtpServer : OtpSelf
     {
-	/**
-	 * Create an {@link OtpServer} from an existing {@link OtpSelf}.
-	 * 
-	 * @param self
-	 *                an existing self node.
-	 * 
-	 * @exception java.io.IOException
-	 *                    if a ServerSocket could not be created.
-	 * 
-	 */
-	public OtpServer(OtpSelf self) : base(self.Node, self.Cookie)
-	{
-	}
+        /**
+         * Create an {@link OtpServer} from an existing {@link OtpSelf}.
+         * 
+         * @param self
+         *                an existing self node.
+         * 
+         * @exception java.io.IOException
+         *                    if a ServerSocket could not be created.
+         * 
+         */
+        public OtpServer(OtpSelf self)
+            : base(self.Node, self.Cookie)
+        {
+        }
 
-	/**
-	 * Create an OtpServer, using a vacant port chosen by the operating system.
-	 * To determine what port was chosen, call the object's {@link #port()}
-	 * method.
-	 * 
-	 * @param node
-	 *                the name of the node.
-	 * 
-	 * @param cookie
-	 *                the authorization cookie that will be used by this node
-	 *                when accepts connections from remote nodes.
-	 * 
-	 * @exception java.io.IOException
-	 *                    if a ServerSocket could not be created.
-	 * 
-	 */
-	public OtpServer(String node, String cookie) : base(node, cookie)
-	{
-	}
+        /**
+         * Create an OtpServer, using a vacant port chosen by the operating system.
+         * To determine what port was chosen, call the object's {@link #port()}
+         * method.
+         * 
+         * @param node
+         *                the name of the node.
+         * 
+         * @param cookie
+         *                the authorization cookie that will be used by this node
+         *                when accepts connections from remote nodes.
+         * 
+         * @exception java.io.IOException
+         *                    if a ServerSocket could not be created.
+         * 
+         */
+        public OtpServer(String node, String cookie)
+            : base(node, cookie)
+        {
+        }
 
-	/**
-	 * Create an OtpServer, using the specified port number.
-	 * 
-	 * @param node
-	 *                a name for this node, as above.
-	 * 
-	 * @param cookie
-	 *                the authorization cookie that will be used by this node
-	 *                when accepts connections from remote nodes.
-	 * 
-	 * @param port
-	 *                the port number to bind the socket to.
-	 * 
-	 * @exception java.io.IOException
-	 *                    if a ServerSocket could not be created or if the
-	 *                    chosen port number was not available.
-	 * 
-	 */
-	public OtpServer(String node, String cookie, int port) : base(node, cookie, port)
-	{
-	}
+        /**
+         * Create an OtpServer, using the specified port number.
+         * 
+         * @param node
+         *                a name for this node, as above.
+         * 
+         * @param cookie
+         *                the authorization cookie that will be used by this node
+         *                when accepts connections from remote nodes.
+         * 
+         * @param port
+         *                the port number to bind the socket to.
+         * 
+         * @exception java.io.IOException
+         *                    if a ServerSocket could not be created or if the
+         *                    chosen port number was not available.
+         * 
+         */
+        public OtpServer(String node, String cookie, int port)
+            : base(node, cookie, port)
+        {
+        }
     }
 }

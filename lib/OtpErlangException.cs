@@ -23,21 +23,24 @@ namespace Erlang.NET
     /**
      * Base class for the other OTP erlang exception classes.
      */
-    public class OtpErlangException : OtpException {
-	internal static readonly long serialVersionUID = 1L;
+    public class OtpErlangException : OtpException
+    {
+        internal static readonly long serialVersionUID = 1L;
 
-	/**
-	 * Provides no message.
-	 */
-	public OtpErlangException() : base()
-	{
-	}
+        /**
+         * Provides no message.
+         */
+        public OtpErlangException()
+            : base()
+        {
+        }
 
-	/**
-	 * Provides a detailed message.
-	 */
-	public OtpErlangException(string msg) : base(msg)
-	{
-	}
+        /**
+         * Provides a detailed message.
+         */
+        public OtpErlangException(string msg)
+            : base(msg)
+        {
+        }
     }
 }
