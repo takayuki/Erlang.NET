@@ -177,8 +177,14 @@ namespace Erlang.NET
 
         public override void close()
         {
-            base.close();
-            breakLinks();
+            try
+            {
+                base.close();
+            }
+            finally
+            {
+                breakLinks();
+            }
         }
 
         /*
