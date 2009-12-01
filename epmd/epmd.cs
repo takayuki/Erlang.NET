@@ -78,5 +78,20 @@ namespace Erlang.NET
             throw new NotSupportedException();
         }
     }
+#else
+    public class Epmd
+    {
+        static Epmd()
+        {
+            XmlConfigurator.Configure();
+        }
+
+        public static void Main(string[] args)
+        {
+            OtpEpmd epmd = new OtpEpmd();
+            epmd.start();
+            epmd.join();
+        }
+    }
 #endif
 }
