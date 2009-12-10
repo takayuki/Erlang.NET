@@ -553,24 +553,34 @@ namespace Erlang.NET
             /**
              * Index of element to be returned by subsequent call to next.
              */
+            private int start;
             private int cursor;
             private OtpErlangObject[] elems;
 
-            public Itr(int cursor, OtpErlangObject[] elems)
+            public Itr(int start, OtpErlangObject[] elems)
             {
-                this.cursor = cursor;
+                this.start = start;
+                this.cursor = -1;
                 this.elems = elems;
             }
 
             public bool MoveNext()
             {
-                cursor++;
+                if (cursor == -1)
+                {
+                    cursor = start;
+                }
+                else
+                {
+                    cursor++;
+                }
+                
                 return cursor < elems.Length;
             }
 
             public void Reset()
             {
-                throw new NotImplementedException();
+                cursor = -1;
             }
 
             object IEnumerator.Current
@@ -585,7 +595,14 @@ namespace Erlang.NET
             {
                 get
                 {
-                    return elems[cursor];
+                    try
+                    {
+                        return elems[cursor];
+                    }
+                    catch (IndexOutOfRangeException)
+                    {
+                        return null;
+                    }
                 }
             }
 
