@@ -83,7 +83,7 @@ namespace Erlang.NET
          */
         public OtpErlangAtom(bool t)
         {
-            atom = t.ToString();
+            atom = t ? "true" : "false"; 
         }
 
         /**
